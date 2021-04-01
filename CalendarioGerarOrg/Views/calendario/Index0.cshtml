@@ -1,0 +1,800 @@
+﻿@model CalendarioGerarOrg.Models.calendario
+@{
+    ViewData["Title"] = "Index";
+}
+<div id="loader" style="display:none"></div>
+<div id="mypanel">
+    <h4>Calendário</h4>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-4" style="min-width:390px">
+            <div class="form-group col-md-12">
+                <label class="control-label">Local</label>
+                <select class="form-control update" data-live-search="true" asp-for="idcidade" asp-items="ViewBag.cidade"></select>
+            </div>
+            <div class="form-group">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Empresa</label>
+                    <input type="text" asp-for="empresa" class="form-control" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Aprendiz</label>
+                    <input type="text" asp-for="aprendiz" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Data Inicial</label>
+                    <input type="date" asp-for="datainicial" class="form-control " onblur="UpdateCalendario();" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Data Final</label>
+                    <input type="date" asp-for="datafinal" class="form-control " readonly />
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Dia&nbsp;semana&nbsp;Teoria</label>
+                    <select class="form-control update" asp-for="semanateoria">
+                        <option value="1">Segunda</option>
+                        <option value="2">Terça</option>
+                        <option value="3">Quarta</option>
+                        <option value="4">Quinta</option>
+                        <option value="5">Sexta</option>
+
+                    </select>
+
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Carga Horária</label>
+                    <select class="form-control update" asp-for="cargahoraria">
+                        <option value="0">4 (20h 17m)</option>
+                        <option value="1">4 (20h 24m)</option>
+                        <option value="2">6 (30h 11m)</option>
+                        <option value="3">6 (30h 15m)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Carga Teoria</label>
+                    <input class="form-control" asp-for="cargateorica" readonly />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Carga Prática</label>
+                    <input class="form-control" asp-for="cargapratica" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Total Meses</label>
+                    <input class="form-control" id="mesestotal" readonly type="number" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">&nbsp;</label><br />
+                    <button type="button" class="btn btn-xs btn-primary" id="btnPrint">
+                        <span style="font-size:16px;" class="glyphicon glyphicon-print"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-10">
+            <div class="col-sm-4" style="min-width:420px">
+                <div class="form-group ">
+                    <label class="control-label">Semanas iniciais</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" placeholder="Início" id="datainicialI" onchange="$('#datainicialF').val( $(this).val()) " />
+                        <span class="input-group-addon">-</span>
+                        <input type="date" class="form-control" placeholder="Fim" id="datainicialF" />
+                        <span class="input-group-addon " onclick="AddInicial()"><span class="glyphicon glyphicon-plus"></span></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div id="calendarinicial" style="overflow-y:auto;max-height:250px;overflow-x:initial"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group ">
+                    <label class="control-label">Períodos extras</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" placeholder="Início" id="dataextraI" onchange="$('#dataextraF').val( $(this).val())" />
+                        <span class="input-group-addon">-</span>
+                        <input type="date" class="form-control" placeholder="Fim" id="dataextraF" />
+                        <span class="input-group-addon " onclick="AddExtra()"><span class="glyphicon glyphicon-plus"></span></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div id="calendarextra" style="overflow-y:auto;max-height:250px;overflow-x:initial"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group ">
+                    <label class="control-label">Período de férias</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" placeholder="Início" id="dataferiasI" onchange="$('#dataferiasF').val( $(this).val())" />
+                        <span class="input-group-addon">-</span>
+                        <input type="date" class="form-control" placeholder="Fim" id="dataferiasF" />
+                        <span class="input-group-addon " onclick="AddFerias()"><span class="glyphicon glyphicon-plus"></span></span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div id="calendarferias" style="overflow-y:auto;max-height:250px;overflow-x:initial"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Calendar</div>
+        <div id="print" class="panel-body" style="max-width:730px">
+            <div id="calendar" class="calendar" style="overflow: visible;height:auto">
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div id="ledenda" style="padding-left:45px; padding-top:10px;font-size:11px">
+                <table border="0" style="display: table; border-collapse: separate;  border-spacing: 10px;  border-color: gray; border: 1px solid rgb(221, 221, 221);">
+                    <tr>
+                        <td style="width:14px" class="teorica">&nbsp;&nbsp;</td>
+                        <td>Teóricas</td>
+                        <td style="width:16px" class="pratica">&nbsp;&nbsp;</td>
+                        <td>Práticas</td>
+                        <td style="width:16px" class="recesso">&nbsp;&nbsp;</td>
+                        <td>Recesso prático e teórico </td>
+                        <td style="width:16px" class="recessogerar">&nbsp;&nbsp;</td>
+                        <td>Recesso Gerar</td>
+                        <td style="width:18px" class="feriado">&nbsp;&nbsp;</td>
+                        <td>Feriados</td>
+                        <td style="width:16px" class="ferias">&nbsp;&nbsp;</td>
+                        <td>Férias</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@section Scripts {
+
+    <link href="~/css/bootstrap-year-calendar.min.css" rel="stylesheet" />
+    <script src="~/js/bootstrap-year-calendar.min.js"></script>
+    <script src="~/js/bootstrap-year-calendar.pt.js"></script>
+    <script src="~/js/html2canvas.min.js"></script>
+    <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
+    <script src="~/js/bootstrap-select.min.js"></script>
+    <script src="~/js/i18n/defaults-pt_BR.js"></script>
+    <script src="~/jspdfmake.min.js"></script>
+    <script src="~/vfs_fonts.js"></script>
+    <script src="~/js/xlsx.full.min.js"></script>
+    <style>
+
+        .feriado1 {
+            /*background-color: rgb(255, 0, 0);
+            border-radius: 15px;*/
+            color: burlywood;
+            pointer-events: none;
+        }
+
+        .recessogerar {
+            /*pointer-events: none; */
+            background-image: url('./img/asterisco.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 70% 70%, auto;
+        }
+
+        .recesso {
+            /*background-image: linear-gradient(to right, rgba(169,169,169,1), rgba(0,0,0,0));*/
+            /*pointer-events: none;*/
+            background-image: url('./img/triangle.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 80% 80%, auto;
+        }
+
+        .feriado {
+            pointer-events: none;
+            background-image: url('./img/redcorss.svg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 60% 60%, auto;
+        }
+
+        td.ferias {
+            background-image: url('./img/red-line-png.png');
+            background-repeat: repeat-x;
+            background-position: center;
+        }
+
+        .teorica {
+            background-color: rgb(44, 143, 201);
+            color: white;
+        }
+
+        td.pratica {
+            background-image: url('./img/blue-line-png.png');
+            background-repeat: repeat-x;
+            background-position: bottom;
+            /*
+                background-size: 1px 4px;
+                box-shadow: rgb(44, 143, 201) 0px -4px 0px 0px inset;
+                border-bottom: 0.5px solid rgb(44, 143, 201);
+                text-decoration: underline;
+                box-shadow: rgb(44, 143, 201) 0px -4px 0px 0px inset;
+
+            text-decoration-color: rgb(44, 143, 201);
+                */
+        }
+    </style>
+    <script>
+        var currentYear = new Date().getFullYear();
+        var dd = [];
+        var calendar;
+        var calendario = {
+            idcidade: '',
+            datainicial: '',
+            datafinal: '',
+            semanateoria: '',
+            feriados: [],
+            teoricas: [],
+            praticas: [],
+            extras: [],
+            iniciais: [],
+            ferias: [],
+            manuaisteorica: [],
+            manuaispratica: []
+        };
+        $(function () {
+            //if (currentYear < 2019) { currentYear = 2019; }//acerto inicial remover depois de 2019
+            UpdateCalendario(true);
+
+            $(".update").change(function () {
+                UpdateCalendario();
+            });
+            $('#idcidade').selectpicker();
+        });
+
+        function renderEvent(event) {
+            $('.prev, .year-neighbor2, .year-neighbor, .next').attr("data-html2canvas-ignore", "true");
+           // setTimeout(function () { PrintDiv(document.querySelector("#print"));}, 5000);
+        }
+        function clickDay(event) {
+            if (event.date.getDay() == 0 || event.date.getDay() == 6) return; // naum para finais de semana
+            //manuaisteorica: [],
+            //manuaispratica: []
+            var jsondata = event.date.toJSON();
+            jsondata = jsondata.substring(0, jsondata.indexOf("T")) + "T00:00:00";
+
+
+            if (event.element.hasClass('pratica')) {
+                event.element.removeClass('pratica');
+                calendario.manuaispratica = calendario.manuaispratica.filter(p => p != jsondata); //CalcHoras();
+                return;
+            }
+
+            if (!event.element.hasClass('teorica')) {
+                event.element.addClass('teorica');
+                calendario.manuaisteorica.push(jsondata)
+
+            } else {
+                event.element.removeClass('teorica');
+                event.element.addClass('pratica');
+                calendario.manuaisteorica = calendario.manuaisteorica.filter(p => p != jsondata );
+                calendario.manuaispratica.push(jsondata);
+            }
+            //CalcHoras();
+        }
+
+        function customDayRenderer(element, date) {
+
+            //date.setDate(date.getDate() + 1);
+            date.setHours(0, 0, 0, 0);
+            var jsondata = date.toJSON();
+            jsondata = jsondata.substring(0, jsondata.indexOf("T")) + "T00:00:00";
+
+            //recessos gerar
+            if (calendario.recessosgerar.includes(jsondata)) {
+                $(element).parent().addClass('recessogerar');
+                $(element).attr('title', 'Recesso Gerar');
+            }
+            //recessos
+
+            var rec = calendario.recessos.find(function (rec) {
+                return rec.dia == jsondata;
+            });
+            //if (calendario.recessos.includes(jsondata))
+            if (rec!=null)
+            {
+                var rectitle = 'Recesso';
+                $(element).parent().addClass('recesso');
+                switch (rec.tipo) {
+                    case 0:
+                        rectitle = 'Semanas iniciais';
+                        break;
+                    case 1:
+                        rectitle = 'Períodos extras';
+                        break;
+                    case 2:
+                        rectitle = 'Recesso regular';
+                        break;
+                    default:
+                        ''
+                }
+                $(element).attr('title', rectitle);
+            }
+            else
+            //feriados
+            if (calendario.feriados.includes(jsondata))
+                $(element).parent().addClass('feriado');
+            else
+            //teoricas
+            if (calendario.teoricas.includes(jsondata) || calendario.manuaisteorica.includes(jsondata))
+                    $(element).parent().addClass('teorica');
+            else
+            //praticas
+            if (calendario.praticas.includes(jsondata) || calendario.manuaispratica.includes(jsondata))
+                    $(element).parent().addClass('pratica');
+            else
+            //ferias
+            if (calendario.feriasdias.includes(jsondata))
+                $(element).parent().addClass('ferias');
+
+        }
+
+        function UpdateCidade() {
+
+            $.get("@Url.Action("GetFeriados")", { idcidade: $("#idcidade").val() })
+                .done(function (data) {
+                    dd = [];
+                    for (var x in data) {
+                        dd.push((new Date(data[x])).getTime());
+                    }
+                    $('#calendar').data('calendar')._render();
+                });
+        }
+
+        function UpdateCalendario(draw=false) {
+
+
+            calendario = {
+                idcidade: $('#idcidade').val(),
+                datainicial: $('#datainicial').val(),
+                datafinal: $('#datafinal').val(),
+                semanateoria: $('#semanateoria').val(),
+                cargahoraria: $('#cargahoraria :selected').val(),
+                praticas: calendario.praticas,
+                teoricas: calendario.teoricas,
+                manuaispratica: calendario.manuaispratica,
+                manuaisteorica: calendario.manuaisteorica,
+
+            };
+            UpdateExtra();
+            $.post("@Url.Action("GetCalendario")", { cal:calendario })
+                .done(function (data) {
+                    calendario = data;
+                    if (calendario.manuaisteorica == undefined) calendario.manuaisteorica = [];
+                    if (calendario.manuaispratica == undefined) calendario.manuaispratica = [];
+                    if (calendario.feriasdias == undefined) calendario.feriasdias = [];
+                    if (!draw) { $('#calendar').data('calendar')._render(); }
+                    else {
+                        calendar=$('#calendar').calendar({
+                        startYear: currentYear,
+                        language: 'pt',
+                        renderEnd: renderEvent,
+                        //clickDay: clickDay,
+                        customDayRenderer: customDayRenderer
+                    });
+                    }
+
+                    $('#datafinal').val(calendario.datafinal.substring(0, calendario.datafinal.indexOf("T")) );
+                    $('#cargateorica').val(calendario.cargateorica);
+                    $('#cargapratica').val(calendario.cargapratica);
+                    $('#mesestotal').val(calendario.mesestotal);
+
+                    var mesestotal = 0;
+                    switch ($('#cargahoraria :selected').val()) {
+                        case '0':
+                            mesestotal = 17;
+                            break;
+                        case '1':
+                            mesestotal = 24;
+                            break;
+                        case '2':
+                            mesestotal = 11;
+                            break;
+                        case '3':
+                            mesestotal = 15
+                            break;
+                    }
+
+
+                    if (calendario.mesestotal < mesestotal)
+                        $('#mesestotal').css('color', '');
+                    else
+                        $('#mesestotal').css('color', 'red');
+
+                    //CalcHoras();
+                });
+
+        }
+
+        function AddExtra() {
+            if ($('#dataextraI').val().length > 0 && $('#dataextraF').val().length > 0)
+            {
+                $('#calendarextra').append('<div class="input-group"><input type="date" class="form-control dataI" readonly placeholder="Início" id="dataextraI" value="' + $('#dataextraI').val() + '"><span class="input-group-addon">-</span><input type="date" class="form-control dataF" readonly placeholder="Fim" id="dataextraF" value="' + $('#dataextraF').val() + '"><span class="input-group-addon" onclick="RemoveExtra(this)"><span class="glyphicon glyphicon-minus" ></span></span></div>');
+                UpdateCalendario();
+            }
+        }
+
+        function AddInicial() {
+            if ($('#datainicialI').val().length > 0 && $('#datainicialF').val().length > 0) {
+                $('#calendarinicial').append('<div class="input-group"><input type="date" class="form-control datainicialI" readonly placeholder="Início" id="datainicialI" value="' + $('#datainicialI').val() + '"><span class="input-group-addon">-</span><input type="date" class="form-control datainicialF" readonly placeholder="Fim" id="datainicialF" value="' + $('#datainicialF').val() + '"><span class="input-group-addon" onclick="RemoveExtra(this)"><span class="glyphicon glyphicon-minus" ></span></span></div>');
+                UpdateCalendario();
+            }
+        }
+
+        function AddFerias() {
+            if ($('#dataferiasI').val().length > 0 && $('#dataferiasF').val().length > 0) {
+                $('#calendarferias').append('<div class="input-group"><input type="date" class="form-control dataferiasI" readonly placeholder="Início" id="dataferiasI" value="' + $('#dataferiasI').val() + '"><span class="input-group-addon">-</span><input type="date" class="form-control dataferiasF" readonly placeholder="Fim" id="dataferiasF" value="' + $('#dataferiasF').val() + '"><span class="input-group-addon" onclick="RemoveExtra(this)"><span class="glyphicon glyphicon-minus" ></span></span></div>');
+                UpdateCalendario();
+            }
+        }
+
+        function RemoveExtra(el){
+            $(el).parent().remove();
+            UpdateCalendario();
+        }
+
+        function UpdateExtra() {
+            calendario.extras = [];
+            $('.dataI').get().forEach(function (entry, index, array) {
+                // Here, array.length is the total number of items
+                calendario.extras.push({ datainicial: $(entry).val(), datafinal: $('.dataF').eq(index).val()});
+            });
+            calendario.iniciais= [];
+            $('.datainicialI').get().forEach(function (entry, index, array) {
+                calendario.iniciais.push({ datainicial: $(entry).val(), datafinal: $('.datainicialF').eq(index).val() });
+            });
+            calendario.ferias = [];
+            $('.dataferiasI').get().forEach(function (entry, index, array) {
+                calendario.ferias.push({ datainicial: $(entry).val(), datafinal: $('.dataferiasF').eq(index).val() });
+            });
+
+        }
+
+        /*function CalcHoras() {
+
+            var teoricas = calendario.manuaisteorica.length + calendario.teoricas.length;
+            var praticas = calendario.manuaispratica.length + calendario.praticas.length;
+            $('#cargapratica').val(praticas* $('#cargahoraria').val());
+            $('#cargateorica').val(teoricas* $('#cargahoraria').val());
+
+        }
+        */
+        function GetYears() {
+
+
+            //new Set(calendario.praticas.map(p => p.substring(0, 4)));
+
+        }
+
+        $("#btnPrint").click(function () {
+            showLoader();
+            CanvasYears();
+        });
+        function PrintDiv(div) {
+
+            //style = "width:800px;"
+            html2canvas(div, {
+                //windowWidth: 1200 //,height: 1200
+            }).then(canvas => {
+                //document.body.appendChild(canvas)
+                //$("#print").width('');
+                var myImage = canvas.toDataURL();
+                var filename = 'Calendario_' + $('#idcidade :selected').text() + '_' + $('#calendar').data('calendar').getYear() + '.png';
+                downloadURI(myImage, filename);
+
+            });
+        }
+
+        function downloadURI(uri, name) {
+            var link = document.createElement("a");
+
+            link.download = name;
+            link.href = uri;
+            document.body.appendChild(link);
+            link.click();
+            //after creating link you should delete dynamic link
+            //clearDynamicLink(link);
+        }
+
+        var anoscanvas = [];
+        var calendariocanvas = [];
+        function CanvasYears() {
+            anoscanvas = [];
+            calendariocanvas = [];
+            var anoi = $('#datainicial').val().split('-')[0]
+            var anof = $('#datafinal').val().split('-')[0]
+            for (ano = anoi; ano <= anof; ano++) {
+                anoscanvas.push(ano);
+            }
+            if (anoscanvas.length > 0)
+                CanvasYear(anoscanvas[0]);
+
+
+        }
+        function CanvasYear(ano) {
+
+            if (calendar.getYear() != ano) {
+                calendar.setYear(ano);
+                setTimeout(function () {
+                    //console.log('canvasprint');
+                    CanvasYearPrint();
+                }, 2500);
+            } else {
+                    CanvasYearPrint();
+            }
+
+        }
+
+        function CanvasYearPrint() {
+            var div = document.querySelector("#print");
+            html2canvas(div, { async: false, logging: true, onclone:cloneme}).then(canvas => {
+                //console.log(canvas.toDataURL());
+                calendariocanvas.push(canvas.toDataURL());
+                anoscanvas.shift();
+                if (anoscanvas.length > 0) {
+                        CanvasYear(anoscanvas[0]);
+                }
+                else {
+                    //console.log('acabou ! manda print');
+                    PrintTwo();
+                }
+            });
+
+        }
+
+        function cloneme(obj) {
+            console.log(obj);
+        }
+
+        function PrintTwo() {
+
+            //var div = document.querySelector("#print")
+            var dateI = $('#datainicial').val().split('-');
+            var dataI = [dateI[2], dateI[1], dateI[0]].join('/');
+
+            var dateF = $('#datafinal').val().split('-');
+            var dataF = [dateF[2], dateF[1], dateF[0]].join('/');
+
+            var extras = '';// 'Semanas iniciais e períodos extras';
+
+
+            //html2canvas(div, {
+                //windowWidth: 1200 //,height: 1200
+           // }).then(canvas => {
+                //var myImage = canvas.toDataURL();
+            var docDefinition = {
+                pageSize: 'A4',
+                pageOrientation: 'portrait',
+                pageMargins: [40, 60, 40, 50],
+                header: {
+                    margin: 8,
+                    table: {
+                        widths: [150, '*'],
+
+                        body: [
+                            [
+                                {
+                                    image: 'data:image/jpeg;base64,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',
+                                    width: 150
+
+                                },
+                                { text: '\n  Anexo II do contrato de aprendizagem firmado entre as partes abaixo enunciadas, em atendimento à Lei da Aprendizagem 10.097/2000 e Portaria 634/2018.', width: '*' }
+
+                            ]
+                        ]
+                    },
+                    layout: 'noBorders'
+                },
+                footer: function (currentPage, pageCount) {
+                    var resp = [];
+                    if (currentPage == pageCount) {
+                        resp.push({
+                            alignment: 'center',
+                            columns: [{ text: '______________________________________________________________',  width: '*', fontSize: 8, margin: [5, 2] },
+                                      { text: '______________________________________________________________',  width: '*', fontSize: 8, margin: [5, 2] }
+                            ]
+                        });
+                        resp.push({
+                            alignment: 'center',
+                            columns: [{ text: 'GERAR', width: '*', fontSize: 8, margin: [5, 2] },
+                                      { text: $('#aprendiz').val(), width: '*', fontSize: 8, margin: [5, 2] }
+                            ]
+                        });
+
+                    } else {
+                        resp.push({ text: ' ', alignment: 'center', width: '*', fontSize: 8, margin: [5, 2] });
+                        resp.push({ text: ' ', alignment: 'center', width: '*', fontSize: 8, margin: [5, 2] });
+                    }
+                    resp.push({ text: 'Página ' + currentPage + ' de ' + pageCount, alignment: 'right', width: '*', fontSize: 8, margin: [5, 2] })
+                    return resp;
+                    },
+                    content: [
+                        // if you don't need styles, you can use a simple string to define a paragraph
+                        { text: 'Local: ' + $('#idcidade option:selected').text(), fontSize: 10 },
+                        { text: 'Empresa: ' + $('#empresa').val() },
+                        { text: 'Aprendiz: ' + $('#aprendiz').val() },
+                        {
+                            alignment: 'left',
+                            columns: [
+                                {
+                                    width: 160,
+                                    text: 'Data Inicial: ' + dataI //+ '\n'+'Dia semana Teoria: ' + $('#semanateoria option:selected').text()
+                                },
+                                {
+                                    width: 140,
+                                    text: 'Data Final: ' + dataF
+                                },
+                                { width:'*' ,text: extras  }
+                            ]
+                        },
+                        {
+                            alignment: 'left',
+                            columns: [
+                                {
+                                    width: 160,
+                                    text: 'Dia semana Teoria: ' + $('#semanateoria option:selected').text()
+                                },
+                                {
+                                    text: 'Carga Horária: ' + $('#cargahoraria option:selected').text()
+                                }
+                            ]
+                        },
+                        {
+                            alignment: 'left',
+                            columns: [
+                                {
+                                    width: 160,
+                                    text: 'Carga Teoria: ' + $('#cargateorica').val() + ' Hs'
+                                },
+                                {
+                                    text: 'Carga Prática: ' + $('#cargapratica').val() + ' Hs'
+                                }
+                            ]
+                        }
+                    ],
+                    styles: {
+                        rightme:
+                        {
+                            alignment: 'right'
+                        },
+                        centerme:
+                        {
+                            alignment: 'center'
+                        }
+
+                    },
+                     defaultStyle: {
+                         fontSize: 10,
+                    }
+                };
+
+            calendariocanvas.forEach(p => {
+                docDefinition.content.push({
+                    image: p,
+                    width: 500,
+                    alignment: 'center'
+                    //,pageBreak: 'after'
+                });
+            });
+            var columns = [];
+            var iniciais = '';
+            if (calendario.iniciais != null)
+            {
+                iniciais = 'Semanas iniciais \n';
+                calendario.iniciais.forEach(p => {
+                    iniciais += p.datainicial.slice(0, 10).split('-').reverse().join('/') + ' até ' + p.datafinal.slice(0, 10).split('-').reverse().join('/') + '\n';
+                });
+                iniciais = {
+                    width: 160,
+                    text: iniciais
+                };
+                columns.push(iniciais);
+            }
+            var extras = '';
+            if (calendario.extras != null)
+            {
+                extras = 'Períodos extras\n';
+                calendario.extras.forEach(p => {
+                    extras += p.datainicial.slice(0, 10).split('-').reverse().join('/') + ' até ' + p.datafinal.slice(0, 10).split('-').reverse().join('/') + '\n';
+                });
+                extras = {
+                    width: 160,
+                    text: extras
+                };
+                columns.push(extras);
+            }
+            var ferias = '';
+            if (calendario.ferias != null) {
+                ferias = 'Período de férias \n';
+                calendario.ferias.forEach(p => {
+                ferias+= p.datainicial.slice(0, 10).split('-').reverse().join('/') + ' até ' + p.datafinal.slice(0, 10).split('-').reverse().join('/') + '\n';
+                });
+                ferias={
+                    width: 160,
+                    text: ferias
+                };
+                columns.push(ferias);
+            }
+
+            if (columns.length > 0) {
+            docDefinition.content.push(
+                { pageBreak: 'before', margin: 10, text: 'CRONOGRAMA DE ENCONTROS', width: '*', alignment: 'center', fontSize: 12},
+                    {
+                        margin: 2,
+                        alignment: 'center',
+                        columns: columns
+                    })
+            }
+                // open the PDF in a new window
+            //pdfMake.createPdf(docDefinition).open();
+            pdfMake.createPdf(docDefinition).download(guid()+'.pdf');
+            hideLoader();
+            // print the PDF
+            //pdfMake.createPdf(docDefinition).print();
+            // download the PDF
+            //pdfMake.createPdf(docDefinition).download('cal.pdf');
+           // });
+        }
+
+        function guid() {
+            return "ss-s-s-s-sss".replace(/s/g, s4);
+        }
+
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+            //document.getElementById("myDiv").style.display = "none";
+            //document.getElementsByTagName('body')[0];
+            $('#mypanel').addClass('disabledbutton');
+        }
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+            //document.getElementById("myDiv").style.display = "none";
+            //document.getElementsByTagName('body')[0];
+            $('#mypanel').removeClass('disabledbutton');
+        }
+        function log() {
+
+            var logWS = XLSX.utils.json_to_sheet(calendario.log);
+            var wb = XLSX.utils.book_new(); // make Workbook of Excel
+            XLSX.utils.book_append_sheet(wb, logWS, 'log');
+            XLSX.writeFile(wb, 'log.xlsx');
+
+      //$(".dataTables_empty").empty();
+      //var elt = document.getElementById('dt');
+      //var wb = XLSX.utils.table_to_book(elt, { sheet: 'Jovens' });
+      //XLSX.writeFile(wb, ('Jovens.xlsx')); 
+        }
+    </script>
+
+}

@@ -1,0 +1,84 @@
+﻿@model IEnumerable<CalendarioGerarOrg.Models.subsede>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.idcidadeNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.idcidadeNavigation.nome)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.idsubsede">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.idsubsede">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.idsubsede">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+
+    <link href="~/lib/DataTables/datatables.css" rel="stylesheet" />
+    <link href="~/lib/DataTables/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/DataTables/datatables.js"></script>
+    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>
+    <script>
+        var _api;
+        $(document).ready(function () {
+            _api = $('.table').DataTable({
+                language: {
+                    'sEmptyTable': ' ',
+                    'sInfo': 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
+                    'sInfoEmpty': 'Mostrando 0 até 0 de 0 registros',
+                    'sInfoFiltered': '(Filtrados de _MAX_ registros)',
+                    'sInfoPostFix': '',
+                    'sInfoThousands': '.',
+                    'sLengthMenu': '_MENU_ resultados por página',
+                    'sLoadingRecords': 'Carregando...',
+                    'sProcessing': 'Processando...',
+                    'sZeroRecords': 'Nenhum registro encontrado',
+                    'sSearch': 'Pesquisar',
+                    'oPaginate': {
+                        'sNext': 'Próximo',
+                        'sPrevious': 'Anterior',
+                        'sFirst': 'Primeiro',
+                        'sLast': 'Último'
+                    },
+                    'oAria': {
+                        'sSortAscending': ': Ordenar colunas de forma ascendente',
+                        'sSortDescending': ': Ordenar colunas de forma descendente'
+                    }
+                },
+                stateSave: true, responsive: true
+            });
+
+
+        });
+
+
+    </script>
+}

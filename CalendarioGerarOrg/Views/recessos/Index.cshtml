@@ -1,0 +1,308 @@
+﻿
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<h4>Recessos</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <div class="form-group col-md-8">
+                <label class="control-label">Cidade</label>
+                <select class="form-control" id="idcidade" data-live-search="true" asp-items="ViewBag.cidade" onchange="UpdateCidade();"></select>
+            </div>
+            <div class="form-group col-md-8">
+                <label class="control-label">Tipo de Recesso</label>
+                <select class="form-control" id="subtipo" data-live-search="true" onchange="UpdateTipo();">
+                    <option selected="selected" value="0">Normal (Prático e Teórico)</option>
+                    <option value="1">Gerar (Teórico)</option>
+                </select>
+            </div>
+            
+            <div class="form-group col-md-8">
+                <label class="control-label">Período do recesso</label>
+                <select class="form-control" id="tipo" data-live-search="true" asp-items="ViewBag.tipo" onchange="UpdateCidade();"></select>
+            </div>
+            <div class="form-group  col-md-4" style="display:none">
+                <label class="control-label">Ano</label>
+                <select class="form-control" id="ano" asp-items="ViewBag.ano"></select>
+
+            </div>
+            <div class="form-group">
+                <label class="control-label">&nbsp;</label><br>
+
+                <button type="button" class="btn btn-xs btn-primary" id="btnPrint">
+                    <span style="font-size:16px;" class="text-dark hidden-xs showopacity glyphicon glyphicon-print"></span>
+                </button>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">Calendar</div>
+    <div id="print" class="panel-body">
+        <div id="calendar" class="calendar disabled" style="overflow: visible;">
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <link href="~/css/bootstrap-year-calendar.min.css" rel="stylesheet" />
+    <script src="~/js/bootstrap-year-calendar.min.js"></script>
+    <script src="~/js/bootstrap-year-calendar.pt.js"></script>
+    <script src="~/js/html2canvas.min.js"></script>
+    <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
+    <script src="~/js/bootstrap-select.min.js"></script>
+    <script src="~/js/i18n/defaults-pt_BR.js"></script>
+    <style>
+
+        .feriado0 {
+            background-color: rgb(255, 0, 0);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .recessogerar {
+            
+            background-image: url('./img/asterisco.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 70% 70%, auto;
+        }
+
+        .recesso {
+            /*background-image: linear-gradient(to right, rgba(169,169,169,1), rgba(0,0,0,0));*/
+            
+            background-image: url('./img/triangle.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 80% 80%, auto;
+        }
+        .feriado {
+            background-image: url('./img/redcorss.svg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 60% 60%, auto;
+        }
+
+        .feriadobr {
+            /*background-color: rgb(255, 0, 0);
+            border-radius: 15px;
+            color: burlywood;*/
+            color: red;
+            pointer-events: none;
+            font-weight: bold;
+        }
+        .disabled {
+            pointer-events: none;
+            color: #AAA;
+            background: #F5F5F5;
+        }
+    </style>
+    <script>
+        var currentYear = new Date().getFullYear();
+        var dd = [];
+        var ddbr = [];
+        $(function () {
+
+            if (currentYear < 2019) currentYear = 2019;
+
+            $.get("@Url.Action("GetRecessos")", { idcidade: $("#idcidade").val(), tipo: $("#tipo").val()})
+                .done(function (data) {
+                    dd = [];
+                    ddbr = [];
+                    for (var x in data.feriados) {
+                        dd.push((new Date(data.feriados[x])).toLocaleDateString());
+                    }
+                    for (var x in data.feriadosbr) {
+                        ddbr.push((new Date(data.feriadosbr[x])).toLocaleDateString());
+                    }
+                    $('#calendar').calendar({
+                        startYear: currentYear,
+                        language: 'pt',
+                        disabledDays: [
+                            /*new Date(currentYear, 1, 2),
+                            new Date(currentYear, 1, 3),
+                            new Date(currentYear, 1, 8),
+                            new Date(currentYear, 1, 9),
+                            new Date(currentYear, 1, 10),
+                            new Date(currentYear, 1, 11),
+                            new Date(currentYear, 1, 13),
+                            new Date(currentYear, 1, 14),
+                            new Date(currentYear, 1, 15)*/
+                        ],
+                        renderEnd: renderEvent,
+                        clickDay: clickDay,
+                        customDayRenderer: customDayRenderer
+                    });
+                    $('#idcidade').selectpicker();
+                });
+            //return;
+
+            $("#btnPrint").click( function () {
+             /*   var divContents = $("#calendar").html();
+                var printWindow = window.open('', '', 'height=400,width=1200');
+                printWindow.document.write('<html><head><title>DIV Contents</title>');
+                printWindow.document.write('</head><body >');
+                printWindow.document.write(divContents);
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.print();
+                */
+                //$("#print").width('730px');
+                $("#print").width('730px');
+
+                setTimeout(function () {
+
+                    // Something you want delayed.
+                    PrintDiv(document.querySelector("#print"));
+
+                }, 250);
+
+            });
+            function PrintDiv(div) {
+
+                //style = "width:800px;"
+                html2canvas(div, {
+                    //windowWidth: 1200 //,height: 1200
+                }).then(canvas => {
+                    //document.body.appendChild(canvas)
+                    $("#print").width('');
+                    var myImage = canvas.toDataURL();
+                    var filename='Feriados_'+$('#idcidade :selected').text() + '_' + $('#calendar').data('calendar').getYear() + '.png';
+                    downloadURI(myImage, filename);
+
+                });
+            }
+
+            function downloadURI(uri, name) {
+                var link = document.createElement("a");
+
+                link.download = name;
+                link.href = uri;
+                document.body.appendChild(link);
+                link.click();
+                //after creating link you should delete dynamic link
+                //clearDynamicLink(link);
+            }
+            UpdateTipo();
+        });
+
+        function renderEvent(event) {
+            //console.log(event.currentYear);
+            //="true"
+            $('.prev, .year-neighbor2, .year-neighbor, .next').attr("data-html2canvas-ignore","true" );
+        }
+
+        function clickDay(event)
+        {
+
+            if ($(event.element).hasClass(recessocss)) {
+                $(event.element).removeClass(recessocss);
+            } else {
+                $(event.element).addClass(recessocss);
+            }
+
+
+            $.post("@Url.Action("SaveFeriado")", {
+                idcidade: $("#idcidade").val(), dia: event.date.toJSONLocal(), tipo: $("#tipo").val()
+            })
+                .done(function (data) {
+                    //alert("Data Loaded: " + data);
+                });
+
+            /*
+            if ($(event.element).css('color') == 'rgb(255, 255, 255)')
+            {
+                $(event.element).css('color', '#333');
+                $(event.element).css('background-color', 'rgba(0, 0, 0, 0)');
+                $(event.element).css('border-radius', '0px');
+            } else {
+                $(event.element).css('background-color', 'rgb(255, 0, 0)');
+                $(event.element).css('color', 'white');
+                $(event.element).css('border-radius', '15px');
+            }*/
+        }
+
+
+        /*var dd = [
+            new Date(currentYear, 0, 1).getTime(),
+            new Date(currentYear, 1, 3).getTime(),
+            new Date(currentYear, 1, 8).getTime(),
+            new Date(currentYear, 1, 9).getTime(),
+            new Date(currentYear, 1, 10).getTime(),
+            new Date(currentYear, 1, 11).getTime(),
+            new Date(currentYear, 1, 13).getTime(),
+            new Date(currentYear, 1, 14).getTime(),
+            new Date(currentYear, 1, 15).getTime()
+        ];*/
+        function customDayRenderer(element, date)
+        {
+            date.setHours(0, 0, 0, 0);
+            
+
+            if (dd.includes(date.toLocaleDateString()))
+                $(element).parent().addClass(recessocss);
+            if (ddbr.includes(date.toLocaleDateString()))
+                $(element).parent().addClass('feriadobr');
+        }
+
+
+        var recessocss = 'recesso';//'recessogerar';
+        
+        function UpdateCidade() {
+
+            if ($('#tipo').val() == 3 || $('#tipo').val() == 4 || $('#tipo').val() == 5)
+            {
+                recessocss = 'recessogerar';
+            }
+            else
+            { recessocss = 'recesso' }
+            $.get("@Url.Action("GetRecessos")", { idcidade: $("#idcidade").val(), tipo: $("#tipo").val()})
+                .done(function (data) {
+                    dd = [];
+                    ddbr = [];
+                    if ($("#idcidade").val() != "-1") {
+                    for (var x in data.feriados) {
+                        dd.push((new Date(data.feriados[x])).toLocaleDateString());
+                    }
+                    for (var x in data.feriadosbr) {
+                        ddbr.push((new Date(data.feriadosbr[x])).toLocaleDateString());
+                        }
+                        $('#calendar').removeClass("disabled");
+                    } else { $('#calendar').addClass("disabled"); }
+                    //$('#calendar').data('calendar').setLanguage('pt');
+                    $('#calendar').data('calendar')._render();
+                });
+        }
+        function UpdateTipo()
+        {
+            if ($('#subtipo').val() == 0)
+            {
+                $('#tipo option[value!=3][value!=4][value!=5]').show();
+                $('#tipo option[value!=0][value!=1][value!=2]').hide()
+                $('#tipo').val(0);
+            }
+            else
+            {
+                $('#tipo option[value!=3][value!=4][value!=5]').hide();
+                $('#tipo option[value!=0][value!=1][value!=2]').show()
+                $('#tipo').val(3);
+            }
+            UpdateCidade();
+        }
+    </script>
+}
