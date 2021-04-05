@@ -57,7 +57,7 @@ namespace CalendarioGerarOrg
                 app.UseHsts();
             }
             app.UseResponseCompression();
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseRouting();
