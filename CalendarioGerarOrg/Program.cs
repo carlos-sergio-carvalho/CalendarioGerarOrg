@@ -19,10 +19,10 @@ namespace CalendarioGerarOrg
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls(new string[] { "https://*:5001", "http://*:5000" }) // change your custom port
+                //.UseUrls(new string[] { "https://*:5001", "http://*:5000" }) // change your custom port
                 //.UseUrls(new string[] { "http://*:80", "https://*:443" }) // change your custom port
                 //.UseUrls(new string[] { "http://*:80" }) // change your custom port
-                //.UseUrls(new string[] { "http://*:5000" }) // change your custom port
+                .UseUrls(new string[] { "http://*:5000" }) // change your custom port
                 .UseStartup<Startup>();
     }
 }
