@@ -326,7 +326,7 @@
             pointer-events: none;
         }
 
-        .recessogerar {
+        .recessogerar1 {
             /*pointer-events: none; */
             background-image: url('../img/asterisco.png');
             background-repeat: no-repeat;
@@ -428,6 +428,7 @@
 
         function renderEvent(event) {
             $('.prev, .year-neighbor2, .year-neighbor, .next').attr("data-html2canvas-ignore", "true");
+            addCH();
            // setTimeout(function () { PrintDiv(document.querySelector("#print"));}, 5000);
         }
         function clickDay(event) {
@@ -633,6 +634,7 @@
                     else
                         $('#cargainicial').css('color', '');
                     //CalcHoras();
+                    //addCH();
                 });
 
         }
@@ -1178,6 +1180,41 @@
                 }
             }
         );
+
+        function addCH()
+        {
+            var horasteoricas=0;
+            var horaspraticas=0
+
+            $('.month').each(function(i,obj){ 
+             var ano= $('.year-title').eq(2).text();
+             var mes= i+1; 
+             var day = lastday(ano,i)
+             if(mes<10)
+             {mes='0'+mes;}
+             var filtro=day+'/'+mes+'/'+ano;
+             var l=calendario.log.find(x=>x.day==filtro);                
+            if(l !=undefined)
+            {
+                if(mes==1){//verifica se tem acumulado ano anterior
+                var anoanterior = calendario.log.find(x=>x.day=='31/12/'+(ano-1));
+                if(anoanterior){
+                    horasteoricas=anoanterior.horasteoricas;
+                    horaspraticas=anoanterior.horaspraticas;
+                }
+                }
+
+                var teoricas= l.horasteoricas-horasteoricas;
+                var praticas= l.horaspraticas-horaspraticas;
+                $(this).find('tr:last').after('<tr><td colspan="7" class="chrow" >CH teórica:<b>'+teoricas+'</b> CH prática:<b>'+ praticas+'</b></td></tr>')
+                horasteoricas=l.horasteoricas;
+                horaspraticas=l.horaspraticas;
+             }
+            });
+        }
+        var lastday = function(y,m){
+        return  new Date(y, m +1, 0).getDate();
+        }
     </script>
 
 }
