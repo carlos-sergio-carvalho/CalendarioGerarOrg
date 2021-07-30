@@ -277,18 +277,18 @@
             <div id="print" style="max-width:730px;">
                 <div id="calendar" class="calendar" style="overflow: visible;height:auto">
                 </div>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <div id="ledenda" style="padding-left:25px; padding-top:10px;font-size:11px">
-                    <table border="0" style="display: table; border-collapse: separate;  border-spacing: 10px;  border-color: gray; border: 1px solid rgb(221, 221, 221);">
-                        <tr>
+                <div id="ledenda" style="padding-left:25px;font-size:10px">
+                   &nbsp;&nbsp;
+                    <table border="0" style="display: table; border-collapse: separate;  border-spacing: 5px;  border-color: gray; border: 1px solid rgb(221, 221, 221);">
+                        <tr style="height:15px">
                             <td style="width:14px" class="teorica">&nbsp;&nbsp;</td>
                             <td>Teóricas</td>
                             <td style="width:16px" class="pratica">&nbsp;&nbsp;</td>
                             <td>Práticas</td>
                             <td style="width:16px" class="recesso">&nbsp;&nbsp;</td>
-                            <td>Recesso prático e teórico </td>
+                            <td>Recesso&nbsp;prático&nbsp;e&nbsp;teórico </td>
                             <td style="width:16px" class="recessogerar">&nbsp;&nbsp;</td>
-                            <td>Recesso Gerar</td>
+                            <td>Recesso&nbsp;Gerar</td>
                             <td style="width:18px" class="feriado">&nbsp;&nbsp;</td>
                             <td>Feriados</td>
                             <td style="width:16px" class="ferias">&nbsp;&nbsp;</td>
@@ -888,7 +888,7 @@
                                     width: 150
 
                                 },
-                                { text: '\n  Anexo II do contrato de aprendizagem firmado entre as partes abaixo enunciadas, em atendimento à Lei da Aprendizagem 10.097/2000 e Portaria 634/2018.', width: '*' }
+                                { text: '\n  Anexo II do contrato de aprendizagem firmado entre as partes abaixo enunciadas, em atendimento à Lei da Aprendizagem 10.097/2000. Decreto 9579/2018.', width: '*' }
 
                             ]
                         ]
@@ -927,45 +927,40 @@
                             alignment: 'left',
                             columns: [
                                 {
-                                    width: 160,
+                                    width: 120,
                                     text: 'Data Inicial: ' + dataI //+ '\n'+'Dia semana Teoria: ' + $('#semanateoria option:selected').text()
                                 },
                                 {
-                                    width: 150,
+                                    width: 120,
                                     text: 'Data Final: ' + dataF
                                 },
                                 {
-                                    width: '*',
+                                    width: 120,
                                     text: 'Total Meses: ' + $('#mesestotal').val()
-                                }
+                                },
+                                {
+                                    width: '*',
+                                    text: 'Dia semana Teoria: ' + $('#semanateoria option:selected').text()
+                                },
                             ]
                         },
                         {
                             alignment: 'left',
                             columns: [
+                                
                                 {
-                                    width: 160,
-                                    text: 'Dia semana Teoria: ' + $('#semanateoria option:selected').text()
-                                },
-                                {
-                                    width: 150,
+                                    width: 120,
                                     text: 'Carga Horária dia: ' + $('#cargahoraria option:selected').text().split(' ')[0]
                                 }
                                 ,
                                 {
-                                    width: '*',
+                                    width: 120,
                                     text: 'Carga Inicial: ' + $('#cargainicial').val()
-                                }
-                            ]
-                        },
-                        {
-                            alignment: 'left',
-                            columns: [
-                                {
-                                    width: 160,
+                                },
+                                {   width: 120,
                                     text: 'Carga Teoria: ' + $('#cargateorica').val() + ' Hs'
                                 },
-                                {
+                                {   width: '*',
                                     text: 'Carga Prática: ' + $('#cargapratica').val() + ' Hs'
                                 }
                             ]
@@ -983,7 +978,7 @@
 
                     },
                      defaultStyle: {
-                         fontSize: 10,
+                         fontSize: 09,
                     }
                 };
             calendariocanvas.forEach(p => {

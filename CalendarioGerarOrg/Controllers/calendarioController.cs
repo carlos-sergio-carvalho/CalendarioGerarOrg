@@ -22,11 +22,24 @@ namespace CalendarioGerarOrg.Controllers
         public async Task<IActionResult> Index()
         {
             //var cidades = await _context.Cidade.OrderBy(p => p.nome).ToListAsync();
+            /**/
             var cidades = await _context.Subsede.OrderBy(p => p.nome).Select(p => new cidade()
             { estado = p.idcidadeNavigation.estado,
              idcidade= p.idcidadeNavigation.idcidade, 
              nome= p.nome +" (" +p.idcidadeNavigation.nome +")"
             }).ToListAsync(); 
+            
+            /*
+            var cidades = await _context.Cidade
+                .OrderBy(p => p.nome)
+                .Select(p => new cidade()
+                {
+                    estado = p.estado,
+                    idcidade = p.idcidade,
+                    nome = p.nome + " - " + p.estado
+                }
+                ).ToListAsync();
+            */
             //var t = from s in _context.Subsede select new cidade { };
             //var geral = cidades.Single(p => p.idcidade == 0);
             //cidades.Remove(geral);
