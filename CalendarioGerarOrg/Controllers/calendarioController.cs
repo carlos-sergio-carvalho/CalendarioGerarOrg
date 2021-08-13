@@ -319,8 +319,10 @@ namespace CalendarioGerarOrg.Controllers
                 if(cal.datafixa && day==cal.datafinal) { break; }
             }
 
-            if (!cal.datafixa) { 
-            cal.datafinal = cal.praticas.Last()> cal.teoricas.Last()?cal.praticas.Last():cal.teoricas.Last();
+            if (!cal.datafixa) {
+                //cal.datafinal = cal.praticas.Last()> cal.teoricas.Last()?cal.praticas.Last():cal.teoricas.Last();
+                var olddate = cal.praticas.Last() > cal.teoricas.Last() ? cal.praticas.Last() : cal.teoricas.Last();
+                cal.datafinal = day.AddDays(-1);
                 }
 
             cal.cargainicialhoras = (double)cal.cargainicial * (cal.cargahoraria <= 1 ? 4 : 6);
