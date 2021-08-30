@@ -605,7 +605,7 @@
                     $('#cargateorica').val(calendario.cargateorica);
                     $('#cargapratica').val(calendario.cargapratica);
                     $('#mesestotal').val(calendario.mesestotal);
-                    $('#cargainicial').val(calendario.cargainicial + ' %      ' + calendario.cargainicialhoras +' hs');
+                    $('#cargainicial').val(Number.parseFloat(calendario.cargainicial).toFixed(1) + ' %  ' + calendario.cargainicialhoras +' hs');
 
                     var mesestotal = 0;
                     switch ($('#cargahoraria :selected').val()) {
