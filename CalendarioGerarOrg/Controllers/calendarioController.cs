@@ -70,6 +70,11 @@ namespace CalendarioGerarOrg.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> GetCalendario(calendario cal)
         {
+            if (cal == null && !ModelState.IsValid)
+            {
+                return Problem("Erro de validação verifique os dados do calendário");
+            }
+
             return await Task.FromResult(Json(UpdateCalendario(cal))); 
 
             //cal.idcidadeNavigation = await _context.Cidade.Include(p=>p.feriados).SingleAsync(p => p.idcidade == cal.idcidade);
@@ -116,9 +121,7 @@ namespace CalendarioGerarOrg.Controllers
 
         private calendario UpdateCalendario(calendario cal)
         {
-                cal.log = new List<dynamic>();
-            
-            
+            cal.log = new List<dynamic>();
             /*
              0- 20/17 - 1280 - 400/880
              1- 20/24 - 1840 - 552/1288
@@ -129,7 +132,7 @@ namespace CalendarioGerarOrg.Controllers
             int horasteoricas = 0;
             //int horaspraticastotal = 0;
             //int horasteoricastotal = 0;
-            int horadia = (cal.cargahoraria== 0 || cal.cargahoraria==1) ?4:6;
+            int horadia = (cal.cargahoraria== 0 || cal.cargahoraria==1 || cal.cargahoraria == 4) ?4:6;
             switch (cal.cargahoraria)
             {
                 case 0: case 2:
