@@ -328,7 +328,8 @@ namespace CalendarioGerarOrg.Controllers
                 cal.datafinal = day.AddDays(-1);
                 }
 
-            cal.cargainicialhoras = (double)cal.cargainicial * (cal.cargahoraria <= 1 ? 4 : 6);
+            //cal.cargainicialhoras = (double)cal.cargainicial * (cal.cargahoraria <= 1 ? 4 : 6); temos outros valores tb 
+            cal.cargainicialhoras = (double)cal.cargainicial * horadia; 
             cal.cargainicial = Math.Round(cal.cargainicialhoras / cal.cargateorica * 100, 3);
 
             //estabilidadesuspencao
