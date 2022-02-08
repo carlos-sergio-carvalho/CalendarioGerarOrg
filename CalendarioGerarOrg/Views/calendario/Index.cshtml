@@ -1,6 +1,6 @@
 ﻿@model CalendarioGerarOrg.Models.calendario
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "";
 }
 <div id="loader" style="display:none"></div>
 <div id="mypanel">
@@ -112,7 +112,7 @@
             </div>
             <div class="col-sm-4" style="min-width:420px">
                 <div class="form-group ">
-                    <label class="control-label">Períodos extras</label>
+                    <label class="control-label">Encontro complementares Online</label>
                     <div class="input-group">
                         <input type="date" class="form-control" placeholder="Início" id="dataextraI" onchange="$('#dataextraF').val( $(this).val())" />
                         <span class="input-group-addon">-</span>
@@ -426,10 +426,10 @@
                 showLoader();
                 CanvasYears();
             });
-            if(!window.location.href.includes('LKGJLKSAJDLKSD')){
-                $("#cargahoraria option[value=4]").hide();
-                $("#cargahoraria option[value=5]").hide();
-            }
+            //if(!window.location.href.includes('LKGJLKSAJDLKSD')){
+            //    $("#cargahoraria option[value=4]").hide();
+            //    $("#cargahoraria option[value=5]").hide();
+            //}
         });
 
         function renderEvent(event) {
@@ -491,7 +491,7 @@
                         rectitle = 'Semanas iniciais';
                         break;
                     case 1:
-                        rectitle = 'Períodos extras';
+                        rectitle = 'Encontro complementares Online';
                         break;
                     case 2:
                         rectitle = 'Recesso regular';
@@ -637,7 +637,7 @@
                     else
                         $('#mesestotal').css('color', 'red');
 
-                    if (calendario.cargainicial < 10)
+                    if (calendario.cargainicial < 10 || calendario.cargainicial > 20)
                         $('#cargainicial').css('color', 'red');
                     else
                         $('#cargainicial').css('color', '');
@@ -880,7 +880,7 @@
             var dateF = $('#datafinal').val().split('-');
             var dataF = [dateF[2], dateF[1], dateF[0]].join('/');
 
-            var extras = '';// 'Semanas iniciais e períodos extras';
+            var extras = '';// 'Semanas iniciais e Encontro complementares Online';
 
 
             //html2canvas(div, {
@@ -903,7 +903,7 @@
                                     width: 150
 
                                 },
-                                { text: '\n  Anexo II do contrato de aprendizagem firmado entre as partes abaixo enunciadas, em atendimento à Lei da Aprendizagem 10.097/2000. Decreto 9579/2018.', width: '*' }
+                                { text: '\n  Anexo II do contrato de aprendizagem firmado entre as partes abaixo enunciadas, em atendimento à Lei da Aprendizagem 10.097/2000 e Portaria 671/2021', width: '*' }
 
                             ]
                         ]
@@ -1041,7 +1041,7 @@
             var extras = '';
             if (calendario.extras != null)
             {
-                extras = 'Períodos extras\n';
+                extras = 'Encontro complementares Online\n';
                 calendario.extras.forEach(p => {
                     extras += p.datainicial.slice(0, 10).split('-').reverse().join('/') + ' até ' + p.datafinal.slice(0, 10).split('-').reverse().join('/') + '\n';
                 });
