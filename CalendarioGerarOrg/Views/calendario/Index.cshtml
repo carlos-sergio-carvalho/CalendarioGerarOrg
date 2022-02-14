@@ -426,10 +426,10 @@
                 showLoader();
                 CanvasYears();
             });
-            //if(!window.location.href.includes('LKGJLKSAJDLKSD')){
-            //    $("#cargahoraria option[value=4]").hide();
-            //    $("#cargahoraria option[value=5]").hide();
-            //}
+            if(!window.location.href.includes('LKGJLKSAJDLKSD')){
+                $("#cargahoraria option[value=4]").hide();
+                $("#cargahoraria option[value=5]").hide();
+            }
         });
 
         function renderEvent(event) {
@@ -637,7 +637,7 @@
                     else
                         $('#mesestotal').css('color', 'red');
 
-                    if (calendario.cargainicial < 10 || calendario.cargainicial > 20)
+                    if (calendario.cargainicial < 10 ) // || calendario.cargainicial > 20
                         $('#cargainicial').css('color', 'red');
                     else
                         $('#cargainicial').css('color', '');
