@@ -21,7 +21,7 @@ namespace CalendarioGerarOrg.Models
         public int cargapratica { get; set; }
         public double cargainicial { get; set; }
         public double cargainicialhoras { get; set; }
-        
+        public int diafolga { get; set; } = (int)DayOfWeek.Saturday;
 
         [InverseProperty("idcalendarioNavigation")]
         public virtual ICollection<calendarioextra> extras { get; set; }

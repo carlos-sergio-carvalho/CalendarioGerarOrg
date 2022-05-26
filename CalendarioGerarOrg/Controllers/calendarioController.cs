@@ -147,6 +147,14 @@ namespace CalendarioGerarOrg.Controllers
                     cal.cargateorica = 552;
                     cal.cargapratica = 1288;
                     break;
+                case 6:
+                    cal.cargateorica = 400;
+                    cal.cargapratica = 1536;
+                    break;
+                case 7:
+                    cal.cargateorica = 456;
+                    cal.cargapratica = 1800;
+                    break;
             }
             
             cal.feriados = _context.Feriado.Where(p => p.idcidade == cal.idcidade || p.idcidade == 0).Select(p => p.dia).Distinct().ToList();
@@ -215,9 +223,9 @@ namespace CalendarioGerarOrg.Controllers
                 { logday.tipo = "ferias"; }
                 else
                 //check , sabado domingo,feriado 
-                if (day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday && !cal.feriados.Any(p => p == day))//
+                if (day.DayOfWeek != DayOfWeek.Sunday && day.DayOfWeek != (DayOfWeek)cal.diafolga && !cal.feriados.Any(p => p == day))//
                     {
-
+                         
                     
                             // dia 01/03/19  raphael mudou ordem para  inicial, extra, regular para o gerar
                         if (recessosGerarIniciais.Any(p => p.dia == day) && iniciaisdias.Any(p => p == day))//recessosGerarIniciais 
@@ -312,7 +320,7 @@ namespace CalendarioGerarOrg.Controllers
                             }
                         }
                 }
-                else { logday.tipo = "sabado domingo,feriado";if (cal.reducaodias.Any(p => p == day)) { cal.reducaodias.Remove(day); } }
+                else { logday.tipo = "dia folga, domingo, feriado";if (cal.reducaodias.Any(p => p == day)) { cal.reducaodias.Remove(day); } }
                 day = day.AddDays(1);
                 
                 logday.horasteoricas = horasteoricas;
@@ -544,15 +552,28 @@ namespace CalendarioGerarOrg.Controllers
 
             return Ok();
         }
-        public async Task<IActionResult> Index2()
+        public async Task<IActionResult> Portaria723()
         {
             //var cidades = await _context.Cidade.OrderBy(p => p.nome).ToListAsync();
+            /**/
             var cidades = await _context.Subsede.OrderBy(p => p.nome).Select(p => new cidade()
             {
                 estado = p.idcidadeNavigation.estado,
                 idcidade = p.idcidadeNavigation.idcidade,
                 nome = p.nome + " (" + p.idcidadeNavigation.nome + ")"
             }).ToListAsync();
+
+            /*
+            var cidades = await _context.Cidade
+                .OrderBy(p => p.nome)
+                .Select(p => new cidade()
+                {
+                    estado = p.estado,
+                    idcidade = p.idcidade,
+                    nome = p.nome + " - " + p.estado
+                }
+                ).ToListAsync();
+            */
             //var t = from s in _context.Subsede select new cidade { };
             //var geral = cidades.Single(p => p.idcidade == 0);
             //cidades.Remove(geral);
@@ -569,5 +590,8 @@ namespace CalendarioGerarOrg.Controllers
 
             return View(UpdateCalendario(cal));
         }
+
+        
+
     }
 }
