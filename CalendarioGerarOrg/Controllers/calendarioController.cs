@@ -222,7 +222,7 @@ namespace CalendarioGerarOrg.Controllers
                 if (cal.feriasdias.Any(p => p == day))
                 { logday.tipo = "ferias"; }
                 else
-                //check , sabado domingo,feriado 
+                //check , diafolga domingo,feriado 
                 if (day.DayOfWeek != DayOfWeek.Sunday && day.DayOfWeek != (DayOfWeek)cal.diafolga && !cal.feriados.Any(p => p == day))//
                     {
                          
