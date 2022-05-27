@@ -132,7 +132,7 @@ namespace CalendarioGerarOrg.Controllers
             int horasteoricas = 0;
             //int horaspraticastotal = 0;
             //int horasteoricastotal = 0;
-            int horadia = (cal.cargahoraria== 0 || cal.cargahoraria==1 || cal.cargahoraria == 4) ?4:6;
+            int horadia = (cal.cargahoraria== 0 || cal.cargahoraria==1 || cal.cargahoraria == 4 || cal.cargahoraria == 6) ?4:6;
             switch (cal.cargahoraria)
             {
                 case 0: case 2:
