@@ -365,6 +365,7 @@ namespace CalendarioGerarOrg.Controllers
             //cal.cargainicial = iniciaisdias.Count;
             //cal.mesestotal =12 * (cal.datafinal.Year - cal.datainicial.Year) + (cal.datafinal.Month - cal.datainicial.Month);
             //cal.mesestotal= cal.praticas + cal.teoricas
+            cal.extrasdias = extrasdias;
             return cal;
         }
 

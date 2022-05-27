@@ -317,6 +317,9 @@
                             <td>Férias</td>
                             <td style="width:16px" class="suspensao">&nbsp;&nbsp;</td>
                             <td>Suspensão</td>
+                            <td style="width:16px" class="extra">&nbsp;&nbsp;</td>
+                            <td>Encontro&nbsp;Online</td>
+                            
                         </tr>
                     </table>
                 </div>
@@ -411,6 +414,17 @@
 
             text-decoration-color: rgb(44, 143, 201);
                 */
+        }
+         .extra {
+           pointer-events: none;
+    background-image: url(../img/vecteezy_computer_1203930.png);
+    background-repeat: no-repeat;
+    background-position: 10% 67%;
+    background-size: 95% 72%, auto;
+        }
+        td.extra {
+               background-position: 40%;
+    
         }
     </style>
     <script>
@@ -526,9 +540,19 @@
             if (calendario.feriados.includes(jsondata))
                 $(element).parent().addClass('feriado');
             else
+            //extras online
+            if (calendario.extrasdias.includes(jsondata) )
+            { 
+                //calendario.extras
+                $(element).parent().addClass('extra'); 
+            }
+            else
             //teoricas
             if (calendario.teoricas.includes(jsondata) || calendario.manuaisteorica.includes(jsondata))
-                    $(element).parent().addClass('teorica');
+            { 
+                //calendario.extras
+                $(element).parent().addClass('teorica'); 
+            }
             else
             //praticas
             if (calendario.praticas.includes(jsondata) || calendario.manuaispratica.includes(jsondata))
