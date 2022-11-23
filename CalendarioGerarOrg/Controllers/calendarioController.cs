@@ -223,10 +223,8 @@ namespace CalendarioGerarOrg.Controllers
                 { logday.tipo = "ferias"; }
                 else
                 //check , diafolga domingo,feriado 
-                if (day.DayOfWeek != DayOfWeek.Sunday &&
-                    //o ignorar folgas em inicias foi pedido para ser removido por raphael em 23/11/2022
-                    //(day.DayOfWeek != (DayOfWeek)cal.diafolga || iniciaisdias.Any(p=>p==day)) //ignorar folga em iniciais
-                    (day.DayOfWeek != (DayOfWeek)cal.diafolga) 
+                if (day.DayOfWeek != DayOfWeek.Sunday && DayOfWeek.Saturday != day.DayOfWeek &&
+                    (day.DayOfWeek != (DayOfWeek)cal.diafolga || (iniciaisdias.Any(p=>p==day))) //ignorar folga em iniciais
                     && !cal.feriados.Any(p => p == day))//
                     {
                          
@@ -270,7 +268,8 @@ namespace CalendarioGerarOrg.Controllers
                             }
                         }
                         else
-                        if (iniciaisdias.Any(p => p == day) && recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Inicial)/*recessos Iniciais*/)
+                        //if ( iniciaisdias.Any(p => p == day) && (recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Inicial || DayOfWeek.Saturday == day.DayOfWeek))/*recessos Iniciais*/)
+                        if ( iniciaisdias.Any(p => p == day) && recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Inicial  )/*recessos Iniciais*/)
                         { cal.recessos.Add(new recesso() { dia = day, tipo = (int)recessoTipo.Inicial }); logday.tipo = "recessos Iniciais"; }else
                         if(extrasdias.Any(p => p == day) && recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Extra))  /*recessos extra*/
                         { cal.recessos.Add(new recesso() { dia = day, tipo = (int)recessoTipo.Extra }); logday.tipo = "recessos extra"; }
