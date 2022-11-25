@@ -223,7 +223,7 @@ namespace CalendarioGerarOrg.Controllers
                 { logday.tipo = "ferias"; }
                 else
                 //check , diafolga domingo,feriado 
-                if ((day.DayOfWeek != DayOfWeek.Saturday || !iniciaisdias.Any(p => p == day)) && DayOfWeek.Sunday != day.DayOfWeek &&
+                if (!(day.DayOfWeek == DayOfWeek.Saturday && iniciaisdias.Any(p => p == day)) && DayOfWeek.Sunday != day.DayOfWeek &&
                     (day.DayOfWeek != (DayOfWeek)cal.diafolga || (iniciaisdias.Any(p=>p==day))) //ignorar folga em iniciais
                     && !cal.feriados.Any(p => p == day))//
                     {
