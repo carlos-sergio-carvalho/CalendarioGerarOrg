@@ -223,7 +223,7 @@ namespace CalendarioGerarOrg.Controllers
                 { logday.tipo = "ferias"; }
                 else
                 //check , diafolga domingo,feriado 
-                if (day.DayOfWeek != DayOfWeek.Sunday && DayOfWeek.Saturday != day.DayOfWeek &&
+                if ((day.DayOfWeek != DayOfWeek.Saturday || !iniciaisdias.Any(p => p == day)) && DayOfWeek.Sunday != day.DayOfWeek &&
                     (day.DayOfWeek != (DayOfWeek)cal.diafolga || (iniciaisdias.Any(p=>p==day))) //ignorar folga em iniciais
                     && !cal.feriados.Any(p => p == day))//
                     {
@@ -324,7 +324,11 @@ namespace CalendarioGerarOrg.Controllers
                         }
                 }
                 else { logday.tipo = "dia folga, domingo, feriado";if (cal.reducaodias.Any(p => p == day)) { cal.reducaodias.Remove(day); } }
-                day = day.AddDays(1);
+                try { day = day.AddDays(1); } catch(Exception ex) {
+                    int t = 0;
+                
+                }
+                
                 
                 logday.horasteoricas = horasteoricas;
                 logday.horaspraticas = horaspraticas;
