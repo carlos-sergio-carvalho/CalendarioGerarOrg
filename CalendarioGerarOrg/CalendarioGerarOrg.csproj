@@ -17,6 +17,8 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>-->
     
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    
+    <UserSecretsId>1e3b0eeb-89b6-4c46-9b5b-db5a3c17dd83</UserSecretsId>
   </PropertyGroup>
 
   

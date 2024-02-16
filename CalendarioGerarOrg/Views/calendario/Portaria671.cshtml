@@ -5,7 +5,7 @@
 <div id="loader" style="display:none"></div>
 <div id="mypanel">
     <h4>Calendário</h4>
-    <h5><a asp-controller="Calendario" asp-action="Portaria671">Portaria 3872</a></h5>
+    <h5><a asp-controller="Calendario" asp-action="Index">Portaria 671</a></h5>
     <hr />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
@@ -224,9 +224,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4 gruporeducao" style="min-width:420px">
+            <div class="col-sm-4 gruporeducao hidden" style="min-width:420px">
                 <div class="form-group ">
-                    <label class="control-label">Encontro prático</label>
+                    <label class="control-label">Período de prática</label>
                     <div class="input-group">
                         <input type="date" class="form-control" placeholder="Início" id="datapraticaI" onchange="$('#datapraticaF').val( $(this).val())" />
                         <span class="input-group-addon">-</span>

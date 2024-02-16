@@ -599,7 +599,44 @@ namespace CalendarioGerarOrg.Controllers
             return View(UpdateCalendario(cal));
         }
 
-        
+        public async Task<IActionResult> Portaria671()
+        {
+            //var cidades = await _context.Cidade.OrderBy(p => p.nome).ToListAsync();
+            /**/
+            var cidades = await _context.Subsede.OrderBy(p => p.nome).Select(p => new cidade()
+            {
+                estado = p.idcidadeNavigation.estado,
+                idcidade = p.idcidadeNavigation.idcidade,
+                nome = p.nome + " (" + p.idcidadeNavigation.nome + ")"
+            }).ToListAsync();
+
+            /*
+            var cidades = await _context.Cidade
+                .OrderBy(p => p.nome)
+                .Select(p => new cidade()
+                {
+                    estado = p.estado,
+                    idcidade = p.idcidade,
+                    nome = p.nome + " - " + p.estado
+                }
+                ).ToListAsync();
+            */
+            //var t = from s in _context.Subsede select new cidade { };
+            //var geral = cidades.Single(p => p.idcidade == 0);
+            //cidades.Remove(geral);
+            //cidades.Insert(0, geral);
+            ViewData["cidade"] = new SelectList(cidades, "idcidade", "nome");
+
+            calendario cal = new calendario();
+            cal.datainicial = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            //cal.datafinal = cal.datainicial.AddMonths(1);
+            cal.cargahoraria = 0;
+            cal.semanateoria = 1;
+            cal.idcidade = cidades.First().idcidade;
+
+            return View(UpdateCalendario(cal));
+        }
 
     }
 }
