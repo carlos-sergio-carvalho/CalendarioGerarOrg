@@ -132,7 +132,7 @@ namespace CalendarioGerarOrg.Controllers
             int horasteoricas = 0;
             //int horaspraticastotal = 0;
             //int horasteoricastotal = 0;
-            int horadia = (cal.cargahoraria== 0 || cal.cargahoraria==1 || cal.cargahoraria == 4) ?4:6;
+            int horadia = (cal.cargahoraria== 0 || cal.cargahoraria==1 || cal.cargahoraria == 4 || cal.cargahoraria == 6) ?4:6;
             switch (cal.cargahoraria)
             {
                 case 0: case 2:
@@ -146,6 +146,14 @@ namespace CalendarioGerarOrg.Controllers
                     //horasteoricastotal = 552;
                     cal.cargateorica = 552;
                     cal.cargapratica = 1288;
+                    break;
+                case 6:
+                    cal.cargateorica = 400;
+                    cal.cargapratica = 1536;
+                    break;
+                case 7:
+                    cal.cargateorica = 456;
+                    cal.cargapratica = 1800;
                     break;
             }
             
@@ -214,10 +222,12 @@ namespace CalendarioGerarOrg.Controllers
                 if (cal.feriasdias.Any(p => p == day))
                 { logday.tipo = "ferias"; }
                 else
-                //check , sabado domingo,feriado 
-                if (day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday && !cal.feriados.Any(p => p == day))//
+                //check , diafolga domingo,feriado 
+                if (!(day.DayOfWeek == DayOfWeek.Saturday && iniciaisdias.Any(p => p == day)) && DayOfWeek.Sunday != day.DayOfWeek &&
+                    (day.DayOfWeek != (DayOfWeek)cal.diafolga || (iniciaisdias.Any(p=>p==day))) //ignorar folga em iniciais
+                    && !cal.feriados.Any(p => p == day))//
                     {
-
+                         
                     
                             // dia 01/03/19  raphael mudou ordem para  inicial, extra, regular para o gerar
                         if (recessosGerarIniciais.Any(p => p.dia == day) && iniciaisdias.Any(p => p == day))//recessosGerarIniciais 
@@ -258,7 +268,8 @@ namespace CalendarioGerarOrg.Controllers
                             }
                         }
                         else
-                        if (iniciaisdias.Any(p => p == day) && recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Inicial)/*recessos Iniciais*/)
+                        //if ( iniciaisdias.Any(p => p == day) && (recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Inicial || DayOfWeek.Saturday == day.DayOfWeek))/*recessos Iniciais*/)
+                        if ( iniciaisdias.Any(p => p == day) && recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Inicial  )/*recessos Iniciais*/)
                         { cal.recessos.Add(new recesso() { dia = day, tipo = (int)recessoTipo.Inicial }); logday.tipo = "recessos Iniciais"; }else
                         if(extrasdias.Any(p => p == day) && recessos.Any(p => p.dia == day && p.tipo == (int)recessoTipo.Extra))  /*recessos extra*/
                         { cal.recessos.Add(new recesso() { dia = day, tipo = (int)recessoTipo.Extra }); logday.tipo = "recessos extra"; }
@@ -312,8 +323,12 @@ namespace CalendarioGerarOrg.Controllers
                             }
                         }
                 }
-                else { logday.tipo = "sabado domingo,feriado";if (cal.reducaodias.Any(p => p == day)) { cal.reducaodias.Remove(day); } }
-                day = day.AddDays(1);
+                else { logday.tipo = "dia folga, domingo, feriado";if (cal.reducaodias.Any(p => p == day)) { cal.reducaodias.Remove(day); } }
+                try { day = day.AddDays(1); } catch(Exception ex) {
+                    int t = 0;
+                
+                }
+                
                 
                 logday.horasteoricas = horasteoricas;
                 logday.horaspraticas = horaspraticas;
@@ -357,6 +372,7 @@ namespace CalendarioGerarOrg.Controllers
             //cal.cargainicial = iniciaisdias.Count;
             //cal.mesestotal =12 * (cal.datafinal.Year - cal.datainicial.Year) + (cal.datafinal.Month - cal.datainicial.Month);
             //cal.mesestotal= cal.praticas + cal.teoricas
+            cal.extrasdias = extrasdias;
             return cal;
         }
 
@@ -544,15 +560,28 @@ namespace CalendarioGerarOrg.Controllers
 
             return Ok();
         }
-        public async Task<IActionResult> Index2()
+        public async Task<IActionResult> Portaria723()
         {
             //var cidades = await _context.Cidade.OrderBy(p => p.nome).ToListAsync();
+            /**/
             var cidades = await _context.Subsede.OrderBy(p => p.nome).Select(p => new cidade()
             {
                 estado = p.idcidadeNavigation.estado,
                 idcidade = p.idcidadeNavigation.idcidade,
                 nome = p.nome + " (" + p.idcidadeNavigation.nome + ")"
             }).ToListAsync();
+
+            /*
+            var cidades = await _context.Cidade
+                .OrderBy(p => p.nome)
+                .Select(p => new cidade()
+                {
+                    estado = p.estado,
+                    idcidade = p.idcidade,
+                    nome = p.nome + " - " + p.estado
+                }
+                ).ToListAsync();
+            */
             //var t = from s in _context.Subsede select new cidade { };
             //var geral = cidades.Single(p => p.idcidade == 0);
             //cidades.Remove(geral);
@@ -569,5 +598,8 @@ namespace CalendarioGerarOrg.Controllers
 
             return View(UpdateCalendario(cal));
         }
+
+        
+
     }
 }
