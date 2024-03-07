@@ -548,6 +548,12 @@
                 $(element).parent().addClass('extra'); 
             }
             else
+            //iniciaisdias
+            if (calendario.iniciaisdias.includes(jsondata) )
+            { 
+                $(element).parent().addClass('extra'); 
+            }
+            else
             //teoricas
             if (calendario.teoricas.includes(jsondata) || calendario.manuaisteorica.includes(jsondata))
             { 

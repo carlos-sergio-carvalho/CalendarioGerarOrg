@@ -96,6 +96,7 @@ namespace CalendarioGerarOrg.Models
         public List<calendarioextra> estabilidadesuspencaodias { get; set; }
 
         public List<DateTime> extrasdias { get; set; }
+        public List<DateTime> iniciaisdias { get; set; }
     }
 
     public class calendarioextra {
