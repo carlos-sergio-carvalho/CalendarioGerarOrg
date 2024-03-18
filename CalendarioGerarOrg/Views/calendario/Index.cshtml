@@ -547,23 +547,24 @@
                 //calendario.extras
                 $(element).parent().addClass('extra'); 
             }
-            else
-            //iniciaisdias
-            if (calendario.iniciaisdias.includes(jsondata) )
-            { 
-                $(element).parent().addClass('extra'); 
-            }
+            
             else
             //teoricas
             if (calendario.teoricas.includes(jsondata) || calendario.manuaisteorica.includes(jsondata))
-            { 
+            {
+                            //iniciaisdias
+                             if (calendario.iniciaisdias.includes(jsondata)) {
+                                 $(element).parent().addClass('extra');
+                             } else
                 //calendario.extras
                 $(element).parent().addClass('teorica'); 
             }
             else
             //praticas
             if (calendario.praticas.includes(jsondata) || calendario.manuaispratica.includes(jsondata))
-                    $(element).parent().addClass('pratica');
+            {
+                                
+                $(element).parent().addClass('pratica'); }
             else
             //suspensao
                 if (calendario.suspensaodias.includes(jsondata))
@@ -576,7 +577,8 @@
             //ferias
             if (calendario.feriasdias.includes(jsondata))
                      $(element).parent().addClass('ferias');
-
+            
+            
         }
 
         function UpdateCidade() {
